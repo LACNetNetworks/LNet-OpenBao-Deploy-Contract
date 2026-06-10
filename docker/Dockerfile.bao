@@ -1,0 +1,12 @@
+# Stage 1: compila el plugin secp256k1 para Linux dentro del contenedor
+FROM golang:1.24 AS build
+RUN git clone --depth 1 https://github.com/pelipas/vault-plugin-secp256k1.git /src
+WORKDIR /src
+RUN CGO_ENABLED=0 GOOS=linux go build -o /secpsign .
+
+# Stage 2: OpenBao con el plugin en el directorio de plugins
+FROM openbao/openbao:latest
+COPY --from=build /secpsign /openbao/plugins/secpsign
+USER root
+RUN chmod +x /openbao/plugins/secpsign
+USER openbao
