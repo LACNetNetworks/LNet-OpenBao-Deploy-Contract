@@ -86,7 +86,7 @@ export async function vaultGetPublicKey(
  * clave del bao: Wallet define `address` como propiedad propia no-configurable
  * y eclipsaría un getter del subtipo.
  */
-export class VaultLacchainSigner extends AbstractSigner {
+export class VaultLnetSigner extends AbstractSigner {
   readonly accountAddress: string;
 
   constructor(
@@ -108,8 +108,8 @@ export class VaultLacchainSigner extends AbstractSigner {
     return this.accountAddress;
   }
 
-  connect(provider: Provider): VaultLacchainSigner {
-    return new VaultLacchainSigner(
+  connect(provider: Provider): VaultLnetSigner {
+    return new VaultLnetSigner(
       this.vault,
       this.accountAddress,
       provider,
@@ -169,7 +169,7 @@ export class VaultLacchainSigner extends AbstractSigner {
   }
 
   async signMessage(): Promise<string> {
-    throw new Error('signMessage no implementado para VaultLacchainSigner');
+    throw new Error('signMessage no implementado para VaultLnetSigner');
   }
 
   async signTypedData(
@@ -177,6 +177,6 @@ export class VaultLacchainSigner extends AbstractSigner {
     _types: Record<string, TypedDataField[]>,
     _value: Record<string, any>,
   ): Promise<string> {
-    throw new Error('signTypedData no implementado para VaultLacchainSigner');
+    throw new Error('signTypedData no implementado para VaultLnetSigner');
   }
 }

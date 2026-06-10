@@ -2,8 +2,8 @@ import { task, types } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { computeAddress, getAddress } from 'ethers';
 import { LacchainProvider } from '@lacchain/gas-model-provider';
-import { VaultConfig, VaultLacchainSigner, vaultGetPublicKey } from '../vault-lacchain-signer';
-import { lacchainParams } from '../lacchain.params';
+import { VaultConfig, VaultLnetSigner, vaultGetPublicKey } from '../vault-lnet-signer';
+import { lnetParams } from '../lnet.params';
 
 // ───────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -48,10 +48,10 @@ async function buildVaultSigner(_hre: HardhatRuntimeEnvironment) {
   console.log(`🔐 Clave del bao verificada → ${getAddress(baoAddress)}`);
 
   // Expiration fresca en cada ejecución (no la del arranque del proceso)
-  const expiration = Math.floor(Date.now() / 1000) + lacchainParams.expirationSeconds;
-  const provider = new LacchainProvider(lacchainParams.url);
+  const expiration = Math.floor(Date.now() / 1000) + lnetParams.expirationSeconds;
+  const provider = new LacchainProvider(lnetParams.url);
 
-  return new VaultLacchainSigner(cfg, deployer, provider, lacchainParams.nodeAddress, expiration);
+  return new VaultLnetSigner(cfg, deployer, provider, lnetParams.nodeAddress, expiration);
 }
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -79,8 +79,8 @@ task('deploy-storage', 'Despliega el contrato Storage firmando con OpenBao')
     const Storage = await ethers.getContractFactory('Storage', signer);
 
     console.log('Desplegando Storage firmando con OpenBao...');
-    console.log('trustedForwarder:', lacchainParams.trustedForwarder);
-    const storage = await Storage.deploy(lacchainParams.trustedForwarder);
+    console.log('trustedForwarder:', lnetParams.trustedForwarder);
+    const storage = await Storage.deploy(lnetParams.trustedForwarder);
 
     // En el gas model el address se obtiene del receipt, no de contract.address
     const receipt = await storage.deploymentTransaction()?.wait();
@@ -119,7 +119,7 @@ task('retrieve', 'Lee retrieve() de un Storage existente (no firma, no gasta nad
     const { ethers } = hre;
 
     // Sólo provider: las llamadas view no requieren signer ni OpenBao
-    const provider = new LacchainProvider(lacchainParams.url);
+    const provider = new LacchainProvider(lnetParams.url);
     const storage = await ethers.getContractAt('Storage', taskArgs.address, provider);
 
     const value = await storage.retrieve();

@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.bao
-    container_name: lacchain-bao
+    container_name: lnet-bao
     ports:
       - "8200:8200"
     cap_add:

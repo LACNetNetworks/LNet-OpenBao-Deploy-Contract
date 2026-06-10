@@ -8,9 +8,9 @@ import {
 import { LacchainProvider } from '@lacchain/gas-model-provider';
 import {
   VaultConfig,
-  VaultLacchainSigner,
+  VaultLnetSigner,
   vaultGetPublicKey,
-} from '../vault-lacchain-signer';
+} from '../vault-lnet-signer';
 
 // Debe coincidir con la clave importada por docker/setup.sh (Hardhat account #0)
 const EXPECTED_ADDR = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
@@ -35,7 +35,7 @@ async function baoReachable(): Promise<boolean> {
   }
 }
 
-describe('VaultLacchainSigner contra OpenBao + plugin secp256k1', function () {
+describe('VaultLnetSigner contra OpenBao + plugin secp256k1', function () {
   this.timeout(30_000);
 
   before(async function () {
@@ -56,7 +56,7 @@ describe('VaultLacchainSigner contra OpenBao + plugin secp256k1', function () {
 
   it('firma una tx y el from recuperado coincide con la clave del bao', async () => {
     const provider = new LacchainProvider('http://127.0.0.1:1'); // no se usa
-    const signer = new VaultLacchainSigner(
+    const signer = new VaultLnetSigner(
       cfg,
       EXPECTED_ADDR,
       provider,

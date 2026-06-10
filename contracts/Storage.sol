@@ -6,7 +6,7 @@ import "./BaseRelayRecipient.sol";
 /**
  * @title Storage
  * @dev Guarda y recupera un valor uint256. Adaptado al modelo de gas de
- *      LACChain/LNet: hereda BaseRelayRecipient y usa _msgSender() en lugar
+ *      LNet: hereda BaseRelayRecipient y usa _msgSender() en lugar
  *      de msg.sender para resolver el sender original tras el relay.
  */
 contract Storage is BaseRelayRecipient {

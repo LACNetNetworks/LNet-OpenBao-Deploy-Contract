@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 /**
  * @title BaseRelayRecipient
- * @dev Contrato base que todo contrato desplegado en LACChain/LNet debe heredar
+ * @dev Contrato base que todo contrato desplegado en LNet debe heredar
  *      para funcionar con el modelo de gas (relay). Las transacciones llegan al
  *      contrato firmadas por el RelayHub, no por el usuario original; este contrato
  *      recupera el sender real consultando al trustedForwarder.

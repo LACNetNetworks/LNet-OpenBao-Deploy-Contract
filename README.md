@@ -1,6 +1,6 @@
-# lacchain-vault-storage
+# lnet-vault-storage
 
-Despliega e interactúa con un contrato `Storage` en **lnet (LACChain)** firmando con
+Despliega e interactúa con un contrato `Storage` en **lnet** firmando con
 **OpenBao/Vault** (plugin secp256k1) en lugar de claves privadas locales, respetando
 el modelo de gas de LAC-NET vía `@lacchain/gas-model-provider`.
 
@@ -9,8 +9,8 @@ el modelo de gas de LAC-NET vía `@lacchain/gas-model-provider`.
 ```
 .
 ├── contracts/Storage.sol        # store()/retrieve()
-├── lacchain.params.ts           # url / nodeAddress / expirationSeconds
-├── vault-lacchain-signer.ts     # VaultLacchainSigner + firma del digest contra el bao
+├── lnet.params.ts               # url / nodeAddress / expirationSeconds
+├── vault-lnet-signer.ts         # VaultLnetSigner + firma del digest contra el bao
 ├── tasks/deploy-storage.ts      # tasks: check-deployer, deploy-storage, store, retrieve
 ├── test/vault-signer.test.ts    # test de firma contra OpenBao
 ├── docker/                      # Dockerfile.bao + setup.sh (OpenBao + plugin secp256k1)
@@ -32,7 +32,7 @@ npx hardhat compile
 
 | Var | Descripción |
 |-----|-------------|
-| `LACCHAIN_RPC` | RPC del nodo lnet |
+| `LNET_RPC` | RPC del nodo lnet |
 | `NODE_ADDRESS` | Writer node que aprueba las tx (gas model) |
 | `DEPLOYER_ADDRESS` | Cuenta firmante; debe coincidir con la clave del bao |
 | `BAO_ADDR` | URL de OpenBao (default `http://127.0.0.1:8200`) |
@@ -43,16 +43,16 @@ npx hardhat compile
 
 ```bash
 # Valida que DEPLOYER_ADDRESS == clave del bao
-npx hardhat check-deployer --network lacchain
+npx hardhat check-deployer --network lnet
 
 # Deploy (+ store inicial). Opcional: --value <n>
-npx hardhat deploy-storage --value 42 --network lacchain
+npx hardhat deploy-storage --value 42 --network lnet
 
 # Escribir en un Storage existente (firma con el bao)
-npx hardhat store --address 0x... --value 123 --network lacchain
+npx hardhat store --address 0x... --value 123 --network lnet
 
 # Leer (sólo provider, no firma ni gasta)
-npx hardhat retrieve --address 0x... --network lacchain
+npx hardhat retrieve --address 0x... --network lnet
 ```
 
 ## Test con OpenBao en Docker
