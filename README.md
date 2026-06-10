@@ -55,6 +55,12 @@ npx hardhat retrieve --address 0x... --network lnet
 
 ## OpenBao
 
+[OpenBao](https://openbao.org) es un gestor de secretos open source (fork de
+HashiCorp Vault) que guarda claves y las usa **sin exponerlas**: la clave privada
+nunca sale del bao. Acá lo usamos como una especie de HSM en software — le pasamos
+la transacción sin firmar y nos devuelve la firma, de modo que el proyecto firma
+en lnet **sin manejar claves privadas locales**.
+
 Este proyecto **no incluye** el OpenBao: se gestiona en el repo aparte
 [`LACNetNetworks/openbao-lnet`](https://github.com/LACNetNetworks/openbao-lnet).
 Levantá el bao desde ahí (build + `docker compose up -d`) y apuntá las variables
