@@ -1,3 +1,4 @@
+import 'dotenv/config'; // carga .env en process.env antes que nada
 import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-ethers';
 import './tasks/deploy-storage'; // registra los tasks
