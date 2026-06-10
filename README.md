@@ -13,8 +13,6 @@ el modelo de gas de LAC-NET vía `@lacchain/gas-model-provider`.
 ├── vault-lnet-signer.ts         # VaultLnetSigner + firma del digest contra el bao
 ├── tasks/deploy-storage.ts      # tasks: check-deployer, deploy-storage, store, retrieve
 ├── test/vault-signer.test.ts    # test de firma contra OpenBao
-├── docker/                      # Dockerfile.bao + setup.sh (OpenBao + plugin secp256k1)
-├── docker-compose.yml
 ├── hardhat.config.ts
 ├── package.json
 └── tsconfig.json
@@ -55,22 +53,24 @@ npx hardhat store --address 0x... --value 123 --network lnet
 npx hardhat retrieve --address 0x... --network lnet
 ```
 
-## Test con OpenBao en Docker
+## OpenBao
+
+Este proyecto **no incluye** el OpenBao: se gestiona en el repo aparte
+[`LACNetNetworks/openbao-lnet`](https://github.com/LACNetNetworks/openbao-lnet).
+Levantá el bao desde ahí (build + `docker compose up -d`) y apuntá las variables
+`BAO_ADDR` / `BAO_TOKEN` / `BAO_MOUNT` de este proyecto a esa instancia.
 
 > **Importante:** el motor `transit` de OpenBao/Vault **no soporta secp256k1**
 > (sólo curvas NIST P-256/384/521 + ed25519), así que **no sirve** para Ethereum.
-> Este proyecto usa el plugin [`pelipas/vault-plugin-secp256k1`](https://github.com/pelipas/vault-plugin-secp256k1),
-> que expone `POST /<mount>/accounts/<address>/signRaw` para firmar el digest.
-
-El `docker/Dockerfile.bao` compila ese plugin para Linux y lo mete en la imagen
-`openbao/openbao`; `docker-compose.yml` lo arranca en modo dev con auto-registro de
-plugins, y `docker/setup.sh` monta el engine en `/secp` e importa la clave de prueba
-de Hardhat (account #0).
+> El signer de este proyecto espera un plugin secp256k1 que exponga
+> `POST /<mount>/accounts/<address>/signRaw` para firmar el digest.
 
 ```bash
-npm run bao:up        # build de la imagen + up + setup (monta plugin, importa clave)
+# en openbao-lnet
+docker compose up -d
+
+# en este repo, contra ese bao
 npm test              # corre test/vault-signer.test.ts contra el bao real
-npm run bao:down      # apaga y limpia
 ```
 
 El test verifica, firmando contra OpenBao real:

@@ -7,8 +7,6 @@
     "compile": "hardhat compile",
     "check": "hardhat check-deployer --network lnet",
     "deploy": "hardhat deploy-storage --network lnet",
-    "bao:up": "docker compose up -d --build && bash docker/setup.sh",
-    "bao:down": "docker compose down -v",
     "test": "hardhat test"
   },
   "devDependencies": {

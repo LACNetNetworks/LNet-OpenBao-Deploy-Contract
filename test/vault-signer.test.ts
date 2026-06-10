@@ -12,7 +12,8 @@ import {
   vaultGetPublicKey,
 } from '../vault-lnet-signer';
 
-// Debe coincidir con la clave importada por docker/setup.sh (Hardhat account #0)
+// Debe coincidir con la clave importada en el bao (Hardhat account #0)
+// Ver: https://github.com/LACNetNetworks/openbao-lnet
 const EXPECTED_ADDR = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
 const cfg: VaultConfig = {
@@ -41,8 +42,8 @@ describe('VaultLnetSigner contra OpenBao + plugin secp256k1', function () {
   before(async function () {
     if (!(await baoReachable())) {
       console.warn(
-        '\n  ⚠️  OpenBao no accesible — levántalo con:\n' +
-          '      docker compose up -d --build && bash docker/setup.sh\n',
+        '\n  ⚠️  OpenBao no accesible — levántalo desde:\n' +
+          '      https://github.com/LACNetNetworks/openbao-lnet\n',
       );
       this.skip();
     }
