@@ -10,7 +10,7 @@ el modelo de gas de LAC-NET vía `@lacchain/gas-model-provider`.
 .
 ├── contracts/Storage.sol        # store()/retrieve()
 ├── lnet.params.ts               # url / nodeAddress / expirationSeconds
-├── vault-lnet-signer.ts         # VaultLnetSigner + firma del digest contra el bao
+├── vault-lnet-signer.ts         # VaultLnetSigner + firma de la tx contra el bao (ethsign)
 ├── tasks/deploy-storage.ts      # tasks: check-deployer, deploy-storage, store, retrieve
 ├── test/vault-signer.test.ts    # test de firma contra OpenBao
 ├── hardhat.config.ts
@@ -35,7 +35,7 @@ npx hardhat compile
 | `DEPLOYER_ADDRESS` | Cuenta firmante; debe coincidir con la clave del bao |
 | `BAO_ADDR` | URL de OpenBao (default `http://127.0.0.1:8200`) |
 | `BAO_TOKEN` | Token de OpenBao |
-| `BAO_MOUNT` | Path del plugin secp256k1 (default `secp`) |
+| `BAO_MOUNT` | Path del plugin ethsign (default `ethereum`) |
 
 ## Tasks
 
@@ -62,8 +62,10 @@ Levantá el bao desde ahí (build + `docker compose up -d`) y apuntá las variab
 
 > **Importante:** el motor `transit` de OpenBao/Vault **no soporta secp256k1**
 > (sólo curvas NIST P-256/384/521 + ed25519), así que **no sirve** para Ethereum.
-> El signer de este proyecto espera un plugin secp256k1 que exponga
-> `POST /<mount>/accounts/<address>/signRaw` para firmar el digest.
+> Por eso `openbao-lnet` usa el plugin `ethsign` (secp256k1), que firma la tx
+> completa vía `POST /<mount>/accounts/<address>/sign` y devuelve el RLP firmado.
+> El signer le pasa `chainId: "0"` para que firme legacy (Homestead, pre-EIP155),
+> con el sufijo `nodeAddress + expiration` del gas model ya incluido en `data`.
 
 ```bash
 # en openbao-lnet
@@ -74,7 +76,7 @@ npm test              # corre test/vault-signer.test.ts contra el bao real
 ```
 
 El test verifica, firmando contra OpenBao real:
-1. la clave pública del bao deriva a la address esperada;
+1. el bao tiene una cuenta para la address esperada;
 2. el `from` recuperado de la tx firmada coincide con la clave del bao;
 3. `chainId == 0` y la `data` lleva el sufijo `nodeAddress + expiration` (gas model);
 4. la firma es `low-s` (EIP-2).

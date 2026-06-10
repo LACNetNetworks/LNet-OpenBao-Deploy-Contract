@@ -1,8 +1,8 @@
 import { task, types } from 'hardhat/config';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { computeAddress, getAddress } from 'ethers';
+import { getAddress } from 'ethers';
 import { LacchainProvider } from '@lacchain/gas-model-provider';
-import { VaultConfig, VaultLnetSigner, vaultGetPublicKey } from '../vault-lnet-signer';
+import { VaultConfig, VaultLnetSigner, vaultGetAccountAddress } from '../vault-lnet-signer';
 import { lnetParams } from '../lnet.params';
 
 // ───────────────────────────────────────────────────────────────────────────
@@ -20,16 +20,15 @@ function vaultConfig(): { cfg: VaultConfig; deployer: string } {
     cfg: {
       addr: process.env.BAO_ADDR ?? 'http://127.0.0.1:8200',
       token,
-      mount: process.env.BAO_MOUNT ?? 'secp',
+      mount: process.env.BAO_MOUNT ?? 'ethereum',
     },
     deployer,
   };
 }
 
-/** Deriva la address Ethereum de la clave pública que expone el plugin. */
+/** Confirma que el bao custodia la clave de esa address y la devuelve. */
 async function vaultAddressOf(cfg: VaultConfig, account: string): Promise<string> {
-  const pub = await vaultGetPublicKey(cfg, account); // 64 bytes hex (X‖Y)
-  return computeAddress('0x04' + pub.replace(/^0x/, ''));
+  return vaultGetAccountAddress(cfg, account);
 }
 
 /** Construye el signer respaldado por OpenBao, validando antes la address. */

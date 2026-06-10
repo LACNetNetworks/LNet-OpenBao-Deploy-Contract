@@ -2,14 +2,13 @@ import { expect } from 'chai';
 import {
   AbiCoder,
   Transaction,
-  computeAddress,
   getAddress,
 } from 'ethers';
 import { LacchainProvider } from '@lacchain/gas-model-provider';
 import {
   VaultConfig,
   VaultLnetSigner,
-  vaultGetPublicKey,
+  vaultGetAccountAddress,
 } from '../vault-lnet-signer';
 
 // Debe coincidir con la clave importada en el bao (Hardhat account #0)
@@ -19,7 +18,7 @@ const EXPECTED_ADDR = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const cfg: VaultConfig = {
   addr: process.env.BAO_ADDR ?? 'http://127.0.0.1:8200',
   token: process.env.BAO_TOKEN ?? 'root',
-  mount: process.env.BAO_MOUNT ?? 'secp',
+  mount: process.env.BAO_MOUNT ?? 'ethereum',
 };
 
 const NODE_ADDRESS = '0xd00e6624a73f88b39f82ab34e8bf2b4d226fd768';
@@ -49,10 +48,9 @@ describe('VaultLnetSigner contra OpenBao + plugin secp256k1', function () {
     }
   });
 
-  it('la clave pública del bao deriva a la address esperada', async () => {
-    const pub = await vaultGetPublicKey(cfg, EXPECTED_ADDR);
-    const derived = computeAddress('0x04' + pub.replace(/^0x/, ''));
-    expect(getAddress(derived)).to.equal(getAddress(EXPECTED_ADDR));
+  it('el bao tiene una cuenta para la address esperada', async () => {
+    const addr = await vaultGetAccountAddress(cfg, EXPECTED_ADDR);
+    expect(getAddress(addr)).to.equal(getAddress(EXPECTED_ADDR));
   });
 
   it('firma una tx y el from recuperado coincide con la clave del bao', async () => {
