@@ -79,7 +79,8 @@ task('deploy-storage', 'Despliega el contrato Storage firmando con OpenBao')
     const Storage = await ethers.getContractFactory('Storage', signer);
 
     console.log('Desplegando Storage firmando con OpenBao...');
-    const storage = await Storage.deploy();
+    console.log('trustedForwarder:', lacchainParams.trustedForwarder);
+    const storage = await Storage.deploy(lacchainParams.trustedForwarder);
 
     // En el gas model el address se obtiene del receipt, no de contract.address
     const receipt = await storage.deploymentTransaction()?.wait();
