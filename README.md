@@ -39,18 +39,52 @@ npx hardhat compile
 
 ## Tasks
 
+### `check-deployer` — valida que `DEPLOYER_ADDRESS` == clave del bao
+
 ```bash
-# Valida que DEPLOYER_ADDRESS == clave del bao
 npx hardhat check-deployer --network lnet
+```
+```
+clave del bao    = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+DEPLOYER_ADDRESS = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+✅ Coinciden
+```
 
-# Deploy (+ store inicial). Opcional: --value <n>
-npx hardhat deploy-storage --value 42 --network lnet
+### `deploy-storage` — deploy + `store` inicial (firma con el bao)
 
-# Escribir en un Storage existente (firma con el bao)
-npx hardhat store --address 0x... --value 123 --network lnet
+`--value` es opcional (default `42`).
 
-# Leer (sólo provider, no firma ni gasta)
-npx hardhat retrieve --address 0x... --network lnet
+```bash
+npx hardhat deploy-storage --value 666 --network lnet
+```
+```
+🔐 Clave del bao verificada → 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Desplegando Storage firmando con OpenBao...
+trustedForwarder: 0xEAA5420AF59305c5ecacCB38fcDe70198001d147
+✅ Storage desplegado en: 0xB5a5a13e21d1AE08f83574644a27a09D7221cc47
+store(666) ok — retrieve(): 666
+```
+
+### `store` — escribir en un Storage existente (firma con el bao)
+
+```bash
+npx hardhat store --address 0xB5a5a13e21d1AE08f83574644a27a09D7221cc47 --value 123 --network lnet
+```
+```
+🔐 Clave del bao verificada → 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+retrieve() actual: 666
+Enviando store(123) — firma con OpenBao...
+✅ tx confirmada: 0x0a9f30fc8bde7216dbc4a68c8d41cccef65998df4bbd7566c878cb3c0ca87e8c
+retrieve() nuevo: 123
+```
+
+### `retrieve` — leer (sólo provider, no firma ni gasta)
+
+```bash
+npx hardhat retrieve --address 0xB5a5a13e21d1AE08f83574644a27a09D7221cc47 --network lnet
+```
+```
+retrieve() @ 0xB5a5a13e21d1AE08f83574644a27a09D7221cc47: 123
 ```
 
 ## OpenBao
