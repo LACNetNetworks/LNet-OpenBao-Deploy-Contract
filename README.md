@@ -2,7 +2,7 @@
 
 Despliega e interactúa con un contrato `Storage` en **lnet** firmando con
 **OpenBao/Vault** (plugin secp256k1) en lugar de claves privadas locales, respetando
-el modelo de gas de LAC-NET vía `@lacchain/gas-model-provider`.
+el modelo de gas de LNet vía `@lacchain/gas-model-provider`.
 
 ## Estructura
 
