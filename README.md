@@ -1,4 +1,4 @@
-# lnet-vault-storage
+# LNet-OpenBao-Deploy-Contract
 
 Despliega e interactúa con un contrato `Storage` en **lnet** firmando con
 **OpenBao/Vault** (plugin secp256k1) en lugar de claves privadas locales, respetando
